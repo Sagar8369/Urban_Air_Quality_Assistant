@@ -152,7 +152,11 @@
 
   async function searchStations(query) {
     if (searchAbort) searchAbort.abort();
-    if (query.length < 2) { autocompleteDD.classList.add('hidden'); return; }
+    if (query.length < 2) {
+      autocompleteDD.classList.add('hidden');
+      cityInput.setAttribute('aria-expanded', 'false');
+      return;
+    }
 
     searchAbort = new AbortController();
     searchSpinner.classList.remove('hidden');
@@ -166,29 +170,34 @@
 
       if (json.status !== 'ok' || !json.data?.length) {
         autocompleteDD.classList.add('hidden');
+        cityInput.setAttribute('aria-expanded', 'false');
         return;
       }
 
       autocompleteDD.innerHTML = json.data
         .slice(0, 8)
-        .map((s) => {
+        .map((s, idx) => {
           const name = s.station_name || s.city || s.name || '';
           const aqi  = s.aqi ?? '';
-          return `<div class="autocomplete-item" data-name="${typeof name === 'string' ? name : ''}">${name}${aqi ? ` <span class="text-gray-500 text-xs ml-2">AQI ${aqi}</span>` : ''}</div>`;
+          return `<div class="autocomplete-item" role="option" id="station-opt-${idx}" tabindex="0" data-name="${typeof name === 'string' ? name : ''}">${name}${aqi ? ` <span class="text-gray-400 text-xs ml-2">AQI ${aqi}</span>` : ''}</div>`;
         })
         .join('');
 
       autocompleteDD.classList.remove('hidden');
+      cityInput.setAttribute('aria-expanded', 'true');
 
       // click handler per item
       autocompleteDD.querySelectorAll('.autocomplete-item').forEach(item => {
         item.addEventListener('click', () => {
           cityInput.value = item.dataset.name || item.textContent.trim();
           autocompleteDD.classList.add('hidden');
+          cityInput.setAttribute('aria-expanded', 'false');
+          cityInput.focus();
         });
       });
     } catch (err) {
       searchSpinner.classList.add('hidden');
+      cityInput.setAttribute('aria-expanded', 'false');
       if (err.name !== 'AbortError') console.error(err);
     }
   }
@@ -379,12 +388,24 @@
 
   function initProfileSelection() {
     $$('.profile-card').forEach(card => {
-      card.addEventListener('click', () => {
+      const selectCard = () => {
         // deselect others
-        $$('.profile-card').forEach(c => c.classList.remove('selected'));
+        $$('.profile-card').forEach(c => {
+          c.classList.remove('selected');
+          c.setAttribute('aria-checked', 'false');
+        });
         card.classList.add('selected');
+        card.setAttribute('aria-checked', 'true');
         selectedProfile = card.dataset.profile;
         btnGetRecs.disabled = false;
+      };
+
+      card.addEventListener('click', selectCard);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          selectCard();
+        }
       });
     });
   }
@@ -542,8 +563,12 @@
   function initTabs() {
     $$('.rec-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        $$('.rec-tab').forEach(t => t.classList.remove('active'));
+        $$('.rec-tab').forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
         tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
         $$('.tab-panel').forEach(p => p.classList.add('hidden'));
         $(`#tab-${tab.dataset.tab}`).classList.remove('hidden');
       });

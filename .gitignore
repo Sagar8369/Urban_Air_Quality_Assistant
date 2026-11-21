@@ -32,5 +32,10 @@ build/
 # Logs
 *.log
 
+# Testing & Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
 # Instance folder
 instance/

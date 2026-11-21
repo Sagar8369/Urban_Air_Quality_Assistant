@@ -29,7 +29,8 @@
 - [🔌 API Endpoints](#-api-endpoints)
 - [🌐 Deployment](#-deployment)
 - [📁 Project Structure](#-project-structure)
-- [🧪 How It Works](#-how-it-works)
+- [🧪 Testing & Quality](#-testing--quality)
+- [🔬 How It Works](#-how-it-works)
 - [🔒 Security](#-security)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
@@ -439,14 +440,50 @@ Urban_Air_Quality_Assistant/
 │
 └── 📂 static/
     ├── 📂 css/
-    │   └── 📄 styles.css        # Custom styles & animations
+    │   └── 📄 styles.css        # Custom styles, animations & a11y support
     └── 📂 js/
-        └── 📄 app.js            # Client-side logic & API interactions
+        └── 📄 main.js           # Client-side logic & API interactions
+│
+└── 📂 tests/                    # Automated test suite (91%+ code coverage)
+    ├── 📄 __init__.py
+    ├── 📄 test_air_quality_service.py # Unit tests for WAQI API & calculations
+    ├── 📄 test_gemini_service.py      # Unit tests for Gemini prompt & JSON parser
+    ├── 📄 test_routes.py              # Integration tests for all Flask API endpoints
+    └── 📄 test_config.py              # Unit tests for configuration management
 ```
 
 ---
 
-## 🧪 How It Works
+## 🧪 Testing & Quality
+
+UrbanAir is backed by an automated test suite achieving **91%+ test coverage** across all core services, route handlers, and configuration modules.
+
+### Running Tests
+
+Execute the test suite using **pytest** with code coverage reporting:
+
+```bash
+# Run pytest with coverage report
+pytest --cov=services --cov=app --cov=config
+```
+
+Or run via Python's standard **unittest** discovery:
+
+```bash
+# Run standard unittest suite
+python -m unittest discover tests
+```
+
+### Test Coverage Highlights
+
+- **`test_air_quality_service.py`**: Validates AQI retrieval by city and GPS coordinates, error handling, station search keyword logic, all 6 AQI severity threshold bands (Good to Hazardous), and health advisory text.
+- **`test_gemini_service.py`**: Verifies dynamic prompt construction across user profiles, markdown JSON fence stripping, invalid JSON fallbacks, and error handling.
+- **`test_routes.py`**: Tests all REST endpoints (`/`, `/api/health`, `/api/air-quality`, `/api/recommendations`, `/api/search-stations`), input validation, missing parameters, and edge-case status codes.
+- **`test_config.py`**: Verifies environment defaults, required keys, and safe fallbacks.
+
+---
+
+## 🔬 How It Works
 
 ```mermaid
 flowchart LR
