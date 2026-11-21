@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌿 UrbanAir — AI-Powered Air Quality Assistant</title>
+  <title>UrbanAir — AI-Powered Air Quality Assistant</title>
+  <meta name="description" content="Real-time air quality monitoring, pollutant breakdown, and personalised health recommendations powered by Google Gemini AI." />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -37,19 +38,22 @@
 <body class="dark bg-gray-950 text-gray-100 min-h-screen antialiased">
 
   <!-- ===== Toast Container ===== -->
-  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3"></div>
+  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3" aria-live="polite" aria-atomic="false"></div>
 
-  <!-- ===== HEADER / HERO ===== -->
-  <header class="relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-teal-950 to-emerald-950"></div>
-    <div class="absolute inset-0 opacity-20">
+  <!-- Skip to main content (a11y) -->
+  <a href="#search-section" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-emerald-500 focus:text-white focus:rounded-lg focus:font-semibold">Skip to main content</a>
+
+    <!-- ===== HEADER / HERO ===== -->
+  <header class="relative overflow-hidden" role="banner">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-teal-950 to-emerald-950" aria-hidden="true"></div>
+    <div class="absolute inset-0 opacity-20" aria-hidden="true">
       <div class="absolute top-10 left-10 w-72 h-72 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
       <div class="absolute bottom-10 right-10 w-96 h-96 bg-teal-500 rounded-full mix-blend-multiply filter blur-3xl animate-float-delayed"></div>
     </div>
     <div class="relative z-10 max-w-5xl mx-auto px-4 py-20 md:py-28 text-center">
       <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
         <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-green-400 bg-clip-text text-transparent">
-          🌿 UrbanAir
+          <span aria-hidden="true">🌿</span> UrbanAir
         </span>
       </h1>
       <p class="text-xl md:text-2xl text-teal-200/80 font-medium mb-4">Your AI-Powered Air Quality Assistant</p>
@@ -58,7 +62,7 @@
       </p>
       <div class="mt-8">
         <a href="#search-section" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/30 transition-all duration-300">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
           Check Your Air Quality
         </a>
       </div>
@@ -68,87 +72,94 @@
   <main class="max-w-5xl mx-auto px-4 pb-20 space-y-16">
 
     <!-- ===== SECTION 1 — LOCATION INPUT ===== -->
-    <section id="search-section" class="pt-10 fade-section">
+    <section id="search-section" class="pt-10 fade-section" aria-labelledby="search-heading">
       <div class="glass-card p-6 md:p-8 rounded-2xl max-w-2xl mx-auto">
-        <h2 class="text-2xl font-bold mb-6 text-center">
+        <h2 id="search-heading" class="text-2xl font-bold mb-6 text-center">
           <span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Find Your Air Quality</span>
         </h2>
 
         <!-- Search input with autocomplete -->
         <div class="relative mb-4">
+          <label for="city-input" class="block text-sm font-medium text-gray-300 mb-2">City or Station Name</label>
           <div class="flex items-center gap-2 bg-gray-800/60 border border-gray-700 rounded-xl px-4 py-3 focus-within:border-emerald-500 transition-colors">
-            <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             <input
               id="city-input"
               type="text"
               placeholder="Search city or station (e.g. Delhi, London…)"
               autocomplete="off"
+              aria-autocomplete="list"
+              aria-controls="autocomplete-dropdown"
+              aria-expanded="false"
               class="bg-transparent flex-1 outline-none text-gray-100 placeholder-gray-500"
             />
-            <div id="search-spinner" class="hidden">
+            <div id="search-spinner" class="hidden" role="status" aria-label="Searching stations">
               <div class="w-5 h-5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
             </div>
           </div>
           <!-- Autocomplete dropdown -->
-          <div id="autocomplete-dropdown" class="hidden absolute z-50 left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl max-h-64 overflow-y-auto custom-scrollbar">
+          <div id="autocomplete-dropdown" class="hidden absolute z-50 left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl max-h-64 overflow-y-auto custom-scrollbar" role="listbox" aria-label="Station suggestions">
           </div>
         </div>
 
         <!-- Buttons row -->
         <div class="flex flex-col sm:flex-row gap-3">
-          <button id="btn-geolocation" class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800/60 border border-gray-700 rounded-xl hover:border-teal-500 hover:bg-teal-500/10 transition-all duration-300 text-sm font-medium">
-            <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <button id="btn-geolocation" aria-label="Use my current location to check air quality" class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-800/60 border border-gray-700 rounded-xl hover:border-teal-500 hover:bg-teal-500/10 transition-all duration-300 text-sm font-medium">
+            <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span>Use My Location</span>
           </button>
-          <button id="btn-check-aqi" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 text-sm">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <button id="btn-check-aqi" aria-label="Check air quality for entered city" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             <span>Check Air Quality</span>
-            <div id="aqi-btn-spinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <div id="aqi-btn-spinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" role="status" aria-label="Loading air quality data"></div>
           </button>
         </div>
       </div>
     </section>
 
     <!-- ===== SECTION 2 — AQI DASHBOARD ===== -->
-    <section id="aqi-dashboard" class="hidden fade-section">
-      <h2 class="text-2xl font-bold mb-8 text-center">
+    <section id="aqi-dashboard" class="hidden fade-section" aria-labelledby="dashboard-heading" aria-live="polite">
+      <h2 id="dashboard-heading" class="text-2xl font-bold mb-8 text-center">
         <span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Air Quality Dashboard</span>
       </h2>
 
       <div class="grid md:grid-cols-2 gap-6 mb-8 md:auto-rows-fr">
         <!-- AQI Gauge Card -->
-        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center overflow-hidden">
+        <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center overflow-hidden" role="region" aria-labelledby="aqi-gauge-heading">
+          <h3 id="aqi-gauge-heading" class="sr-only">AQI Gauge</h3>
           <div class="aqi-gauge-wrapper mb-4 flex-shrink-0">
-            <svg id="aqi-gauge" viewBox="0 0 200 200" class="w-40 h-40 md:w-48 md:h-48">
+            <svg id="aqi-gauge" viewBox="0 0 200 200" class="w-40 h-40 md:w-48 md:h-48" role="img" aria-labelledby="aqi-gauge-title aqi-gauge-desc">
+              <title id="aqi-gauge-title">Air Quality Index Gauge</title>
+              <desc id="aqi-gauge-desc">A circular gauge displaying the current AQI value</desc>
               <!-- Background ring -->
-              <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" />
+              <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" aria-hidden="true" />
               <!-- Animated progress ring -->
               <circle id="aqi-ring" cx="100" cy="100" r="85" fill="none" stroke="#10b981" stroke-width="14"
                 stroke-linecap="round" stroke-dasharray="534" stroke-dashoffset="534"
-                transform="rotate(-90 100 100)" class="transition-all duration-1000 ease-out" />
+                transform="rotate(-90 100 100)" class="transition-all duration-1000 ease-out" aria-hidden="true" />
               <!-- AQI Value -->
               <text id="aqi-value" x="100" y="90" text-anchor="middle" class="text-5xl font-bold fill-current" fill="#10b981" font-size="48" font-weight="800">—</text>
               <text id="aqi-label" x="100" y="120" text-anchor="middle" fill="#9ca3af" font-size="13" font-weight="500">AQI</text>
             </svg>
           </div>
           <!-- Category badge -->
-          <span id="aqi-badge" class="inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-3"></span>
+          <span id="aqi-badge" class="inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-3" aria-live="polite"></span>
           <p id="station-name" class="text-gray-400 text-sm text-center"></p>
-          <p id="aqi-time" class="text-gray-500 text-xs mt-1"></p>
+          <p id="aqi-time" class="text-gray-500 text-xs mt-1" aria-live="polite"></p>
         </div>
 
         <!-- Health Info Card -->
-        <div class="glass-card p-6 rounded-2xl flex flex-col justify-between overflow-hidden">
+        <div class="glass-card p-6 rounded-2xl flex flex-col justify-between overflow-hidden" role="region" aria-labelledby="health-heading">
           <div>
-            <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
-              <span class="text-xl">🫁</span> Health Implications
+            <h3 id="health-heading" class="text-lg font-semibold mb-3 flex items-center gap-2">
+              <span class="text-xl" aria-hidden="true">🫁</span> Health Implications
             </h3>
-            <p id="health-message" class="text-gray-300 leading-relaxed text-sm"></p>
+            <p id="health-message" class="text-gray-300 leading-relaxed text-sm" aria-live="polite"></p>
           </div>
           <div class="mt-4 pt-4 border-t border-gray-700/50">
-            <p class="text-xs text-gray-500 flex items-center gap-1.5">
-              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Dominant pollutant: <strong id="dominant-pollutant" class="text-gray-300">—</strong>
+            <p class="text-xs text-gray-400 flex items-center gap-1.5">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
+              Dominant pollutant: <strong id="dominant-pollutant" class="text-gray-200" aria-live="polite">—</strong>
             </p>
           </div>
         </div>
@@ -156,160 +167,162 @@
 
       <!-- Pollutant Grid -->
       <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span class="text-xl">📊</span> Pollutant Breakdown
+        <span class="text-xl" aria-hidden="true">📊</span> Pollutant Breakdown
       </h3>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="pollutant-grid">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="pollutant-grid" role="list" aria-label="Pollutant levels">
         <!-- PM2.5 -->
-        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="pm25">
+        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="pm25" role="listitem">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">PM2.5</span>
-            <span class="pollutant-value text-lg font-bold text-gray-100">—</span>
+            <span class="pollutant-value text-lg font-bold text-gray-100" aria-label="PM2.5 value">—</span>
           </div>
           <div class="text-xs text-gray-500 mb-2">μg/m³</div>
-          <div class="chart-container"><canvas class="pollutant-chart"></canvas></div>
+          <div class="chart-container"><canvas class="pollutant-chart" aria-label="PM2.5 bar chart comparing value to safe limit" role="img"></canvas></div>
         </div>
         <!-- PM10 -->
-        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="pm10">
+        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="pm10" role="listitem">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">PM10</span>
-            <span class="pollutant-value text-lg font-bold text-gray-100">—</span>
+            <span class="pollutant-value text-lg font-bold text-gray-100" aria-label="PM10 value">—</span>
           </div>
           <div class="text-xs text-gray-500 mb-2">μg/m³</div>
-          <div class="chart-container"><canvas class="pollutant-chart"></canvas></div>
+          <div class="chart-container"><canvas class="pollutant-chart" aria-label="PM10 bar chart comparing value to safe limit" role="img"></canvas></div>
         </div>
         <!-- O3 -->
-        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="o3">
+        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="o3" role="listitem">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">O₃</span>
-            <span class="pollutant-value text-lg font-bold text-gray-100">—</span>
+            <span class="pollutant-value text-lg font-bold text-gray-100" aria-label="Ozone value">—</span>
           </div>
           <div class="text-xs text-gray-500 mb-2">ppb</div>
-          <div class="chart-container"><canvas class="pollutant-chart"></canvas></div>
+          <div class="chart-container"><canvas class="pollutant-chart" aria-label="Ozone bar chart comparing value to safe limit" role="img"></canvas></div>
         </div>
         <!-- NO2 -->
-        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="no2">
+        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="no2" role="listitem">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">NO₂</span>
-            <span class="pollutant-value text-lg font-bold text-gray-100">—</span>
+            <span class="pollutant-value text-lg font-bold text-gray-100" aria-label="Nitrogen Dioxide value">—</span>
           </div>
           <div class="text-xs text-gray-500 mb-2">ppb</div>
-          <div class="chart-container"><canvas class="pollutant-chart"></canvas></div>
+          <div class="chart-container"><canvas class="pollutant-chart" aria-label="NO2 bar chart comparing value to safe limit" role="img"></canvas></div>
         </div>
         <!-- SO2 -->
-        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="so2">
+        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="so2" role="listitem">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">SO₂</span>
-            <span class="pollutant-value text-lg font-bold text-gray-100">—</span>
+            <span class="pollutant-value text-lg font-bold text-gray-100" aria-label="Sulphur Dioxide value">—</span>
           </div>
           <div class="text-xs text-gray-500 mb-2">ppb</div>
-          <div class="chart-container"><canvas class="pollutant-chart"></canvas></div>
+          <div class="chart-container"><canvas class="pollutant-chart" aria-label="SO2 bar chart comparing value to safe limit" role="img"></canvas></div>
         </div>
         <!-- CO -->
-        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="co">
+        <div class="glass-card p-4 rounded-xl pollutant-card" data-pollutant="co" role="listitem">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">CO</span>
-            <span class="pollutant-value text-lg font-bold text-gray-100">—</span>
+            <span class="pollutant-value text-lg font-bold text-gray-100" aria-label="Carbon Monoxide value">—</span>
           </div>
           <div class="text-xs text-gray-500 mb-2">ppm</div>
-          <div class="chart-container"><canvas class="pollutant-chart"></canvas></div>
+          <div class="chart-container"><canvas class="pollutant-chart" aria-label="CO bar chart comparing value to safe limit" role="img"></canvas></div>
         </div>
       </div>
     </section>
 
     <!-- ===== SECTION 3 — USER PROFILE SELECTION ===== -->
-    <section id="profile-section" class="hidden fade-section">
-      <h2 class="text-2xl font-bold mb-2 text-center">
+    <section id="profile-section" class="hidden fade-section" aria-labelledby="profile-heading">
+      <h2 id="profile-heading" class="text-2xl font-bold mb-2 text-center">
         <span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Get Personalized Recommendations</span>
       </h2>
       <p class="text-gray-400 text-center mb-8 text-sm">Select your profile to receive tailored health advice from our AI.</p>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-6" id="profile-grid">
-        <button class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03]" data-profile="family_with_children">
-          <div class="text-4xl mb-2">👨‍👩‍👧‍👦</div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-6" id="profile-grid" role="radiogroup" aria-label="User demographic profile">
+        <button type="button" role="radio" aria-checked="false" aria-label="Family with Children" class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-400" data-profile="family_with_children">
+          <div class="text-4xl mb-2" aria-hidden="true">👨‍👩‍👧‍👦</div>
           <div class="text-sm font-semibold">Family with Children</div>
-          <div class="checkmark hidden mt-2 text-emerald-400">✓</div>
+          <div class="checkmark hidden mt-2 text-emerald-400" aria-hidden="true">✓</div>
         </button>
-        <button class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03]" data-profile="working_professional">
-          <div class="text-4xl mb-2">💼</div>
+        <button type="button" role="radio" aria-checked="false" aria-label="Working Professional" class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-400" data-profile="working_professional">
+          <div class="text-4xl mb-2" aria-hidden="true">💼</div>
           <div class="text-sm font-semibold">Working Professional</div>
-          <div class="checkmark hidden mt-2 text-emerald-400">✓</div>
+          <div class="checkmark hidden mt-2 text-emerald-400" aria-hidden="true">✓</div>
         </button>
-        <button class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03]" data-profile="elderly">
-          <div class="text-4xl mb-2">👴</div>
+        <button type="button" role="radio" aria-checked="false" aria-label="Elderly or Senior" class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-400" data-profile="elderly">
+          <div class="text-4xl mb-2" aria-hidden="true">👴</div>
           <div class="text-sm font-semibold">Elderly / Senior</div>
-          <div class="checkmark hidden mt-2 text-emerald-400">✓</div>
+          <div class="checkmark hidden mt-2 text-emerald-400" aria-hidden="true">✓</div>
         </button>
-        <button class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03]" data-profile="student">
-          <div class="text-4xl mb-2">🎓</div>
+        <button type="button" role="radio" aria-checked="false" aria-label="Student" class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-400" data-profile="student">
+          <div class="text-4xl mb-2" aria-hidden="true">🎓</div>
           <div class="text-sm font-semibold">Student</div>
-          <div class="checkmark hidden mt-2 text-emerald-400">✓</div>
+          <div class="checkmark hidden mt-2 text-emerald-400" aria-hidden="true">✓</div>
         </button>
-        <button class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03]" data-profile="fitness_enthusiast">
-          <div class="text-4xl mb-2">🏃</div>
+        <button type="button" role="radio" aria-checked="false" aria-label="Fitness Enthusiast" class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-400" data-profile="fitness_enthusiast">
+          <div class="text-4xl mb-2" aria-hidden="true">🏃</div>
           <div class="text-sm font-semibold">Fitness Enthusiast</div>
-          <div class="checkmark hidden mt-2 text-emerald-400">✓</div>
+          <div class="checkmark hidden mt-2 text-emerald-400" aria-hidden="true">✓</div>
         </button>
-        <button class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03]" data-profile="pregnant_woman">
-          <div class="text-4xl mb-2">🤰</div>
+        <button type="button" role="radio" aria-checked="false" aria-label="Expecting Mother" class="profile-card glass-card p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-emerald-400" data-profile="pregnant_woman">
+          <div class="text-4xl mb-2" aria-hidden="true">🤰</div>
           <div class="text-sm font-semibold">Expecting Mother</div>
-          <div class="checkmark hidden mt-2 text-emerald-400">✓</div>
+          <div class="checkmark hidden mt-2 text-emerald-400" aria-hidden="true">✓</div>
         </button>
       </div>
 
       <!-- Additional details textarea -->
       <div class="max-w-2xl mx-auto mb-6">
+        <label for="user-details" class="block text-sm font-medium text-gray-300 mb-2">Additional health, routine, or environment details (optional)</label>
         <textarea
           id="user-details"
           rows="3"
           placeholder="Tell us more about your routine, health concerns, or environment (optional)…"
+          aria-label="Additional health, routine, or environment details"
           class="w-full bg-gray-800/60 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-100 placeholder-gray-500 focus:border-emerald-500 focus:outline-none transition-colors resize-none"
         ></textarea>
       </div>
 
       <!-- Get Recommendations button -->
       <div class="text-center">
-        <button id="btn-get-recs" disabled class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300">
-          <span>✨</span>
+        <button id="btn-get-recs" disabled aria-label="Get AI Recommendations" class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 focus:ring-2 focus:ring-emerald-400">
+          <span aria-hidden="true">✨</span>
           <span>Get AI Recommendations</span>
-          <div id="rec-btn-spinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <div id="rec-btn-spinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" role="status" aria-label="Loading recommendations"></div>
         </button>
       </div>
     </section>
 
     <!-- ===== SECTION 4 — AI RECOMMENDATIONS ===== -->
-    <section id="recommendations-section" class="hidden fade-section">
-      <h2 class="text-2xl font-bold mb-8 text-center">
+    <section id="recommendations-section" class="hidden fade-section" aria-labelledby="recs-heading" aria-live="polite">
+      <h2 id="recs-heading" class="text-2xl font-bold mb-8 text-center">
         <span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">AI-Powered Recommendations</span>
       </h2>
 
       <!-- Loading state -->
-      <div id="rec-loading" class="hidden text-center py-16">
-        <div class="loading-spinner mx-auto mb-4"></div>
+      <div id="rec-loading" class="hidden text-center py-16" role="status" aria-live="polite">
+        <div class="loading-spinner mx-auto mb-4" aria-hidden="true"></div>
         <p class="text-gray-400 animate-pulse">Generating personalized recommendations with Gemini AI…</p>
       </div>
 
       <!-- Recommendations content -->
       <div id="rec-content" class="space-y-6">
         <!-- AQI Summary + Risk Badge -->
-        <div id="rec-summary-card" class="glass-card p-6 rounded-2xl">
+        <div id="rec-summary-card" class="glass-card p-6 rounded-2xl" role="region" aria-label="Air Quality Risk Summary">
           <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-            <span id="rec-risk-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider self-start"></span>
-            <p id="rec-aqi-summary" class="text-gray-300 leading-relaxed text-sm flex-1"></p>
+            <span id="rec-risk-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider self-start" aria-live="polite"></span>
+            <p id="rec-aqi-summary" class="text-gray-300 leading-relaxed text-sm flex-1" aria-live="polite"></p>
           </div>
         </div>
 
         <!-- Immediate Actions -->
-        <div id="rec-immediate-actions" class="border border-amber-500/30 bg-amber-500/5 rounded-2xl p-6">
-          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2 text-amber-400">
-            <span>⚡</span> Immediate Actions
+        <div id="rec-immediate-actions" class="border border-amber-500/30 bg-amber-500/5 rounded-2xl p-6" role="region" aria-labelledby="immediate-actions-heading">
+          <h3 id="immediate-actions-heading" class="text-lg font-semibold mb-3 flex items-center gap-2 text-amber-400">
+            <span aria-hidden="true">⚡</span> Immediate Actions
           </h3>
-          <ul id="rec-actions-list" class="space-y-2 text-sm text-gray-300"></ul>
+          <ul id="rec-actions-list" class="space-y-2 text-sm text-gray-300" role="list"></ul>
         </div>
 
         <!-- Outdoor Activity Windows -->
-        <div id="rec-outdoor-card" class="glass-card p-6 rounded-2xl">
-          <h3 class="text-lg font-semibold mb-3 flex items-center gap-2 text-sky-400">
-            <span>🌤️</span> Best Outdoor Activity Windows
+        <div id="rec-outdoor-card" class="glass-card p-6 rounded-2xl" role="region" aria-labelledby="outdoor-heading">
+          <h3 id="outdoor-heading" class="text-lg font-semibold mb-3 flex items-center gap-2 text-sky-400">
+            <span aria-hidden="true">🌤️</span> Best Outdoor Activity Windows
           </h3>
           <p id="rec-outdoor-text" class="text-gray-300 text-sm leading-relaxed"></p>
         </div>
@@ -317,37 +330,37 @@
         <!-- Tabbed Sections -->
         <div class="glass-card rounded-2xl overflow-hidden">
           <!-- Tab Headers -->
-          <div class="flex border-b border-gray-700/50" id="rec-tabs">
-            <button class="rec-tab active flex-1 py-4 text-sm font-semibold text-center transition-all duration-300" data-tab="routines">
-              🏃 Low-Emission Routines
+          <div class="flex border-b border-gray-700/50" id="rec-tabs" role="tablist" aria-label="Recommendation Details">
+            <button id="tab-routines-btn" role="tab" aria-selected="true" aria-controls="tab-routines" class="rec-tab active flex-1 py-4 text-sm font-semibold text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" data-tab="routines">
+              <span aria-hidden="true">🏃</span> Low-Emission Routines
             </button>
-            <button class="rec-tab flex-1 py-4 text-sm font-semibold text-center transition-all duration-300" data-tab="indoor">
-              🏠 Indoor Air Hacks
+            <button id="tab-indoor-btn" role="tab" aria-selected="false" aria-controls="tab-indoor" class="rec-tab flex-1 py-4 text-sm font-semibold text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" data-tab="indoor">
+              <span aria-hidden="true">🏠</span> Indoor Air Hacks
             </button>
-            <button class="rec-tab flex-1 py-4 text-sm font-semibold text-center transition-all duration-300" data-tab="sustainable">
-              🌱 Sustainable Alternatives
+            <button id="tab-sustainable-btn" role="tab" aria-selected="false" aria-controls="tab-sustainable" class="rec-tab flex-1 py-4 text-sm font-semibold text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" data-tab="sustainable">
+              <span aria-hidden="true">🌱</span> Sustainable Alternatives
             </button>
           </div>
           <!-- Tab Panels -->
           <div class="p-6">
-            <div id="tab-routines" class="tab-panel">
+            <div id="tab-routines" role="tabpanel" aria-labelledby="tab-routines-btn" class="tab-panel">
               <div id="routines-grid" class="grid md:grid-cols-2 gap-4"></div>
             </div>
-            <div id="tab-indoor" class="tab-panel hidden">
+            <div id="tab-indoor" role="tabpanel" aria-labelledby="tab-indoor-btn" class="tab-panel hidden">
               <div id="indoor-grid" class="grid md:grid-cols-2 gap-4"></div>
             </div>
-            <div id="tab-sustainable" class="tab-panel hidden">
+            <div id="tab-sustainable" role="tabpanel" aria-labelledby="tab-sustainable-btn" class="tab-panel hidden">
               <div id="sustainable-grid" class="grid md:grid-cols-2 gap-4"></div>
             </div>
           </div>
         </div>
 
         <!-- Weekly Wellness Tips -->
-        <div class="glass-card p-6 rounded-2xl">
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-emerald-400">
-            <span>💚</span> Weekly Wellness Tips
+        <div class="glass-card p-6 rounded-2xl" role="region" aria-labelledby="wellness-heading">
+          <h3 id="wellness-heading" class="text-lg font-semibold mb-4 flex items-center gap-2 text-emerald-400">
+            <span aria-hidden="true">💚</span> Weekly Wellness Tips
           </h3>
-          <div id="wellness-tips-list" class="space-y-3"></div>
+          <div id="wellness-tips-list" class="space-y-3" role="list"></div>
         </div>
       </div>
     </section>
@@ -355,12 +368,12 @@
   </main>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="border-t border-gray-800 mt-10">
+  <footer class="border-t border-gray-800 mt-10" role="contentinfo">
     <div class="max-w-5xl mx-auto px-4 py-10 text-center space-y-3">
       <p class="text-gray-400 text-sm">Powered by <strong class="text-teal-400">WAQI API</strong> &amp; <strong class="text-emerald-400">Google Gemini</strong></p>
-      <p class="text-gray-500 text-xs">Built for <strong>PromptWars Challenge-6</strong> by <strong>Hack2skill</strong></p>
-      <a href="#" class="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-300 text-xs transition-colors">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      <p class="text-gray-400 text-xs">Built for <strong>PromptWars Challenge-6</strong> by <strong>Hack2skill</strong></p>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository" class="inline-flex items-center gap-1.5 text-gray-400 hover:text-gray-200 text-xs transition-colors">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
         GitHub
       </a>
     </div>
