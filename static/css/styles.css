@@ -1,0 +1,288 @@
+/* ===================================================================
+   UrbanAir — Custom Styles
+   =================================================================== */
+
+/* ---------- Glass morphism card ---------- */
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- Fade-in sections ---------- */
+.fade-section {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Floating blobs ---------- */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(30px, -40px) scale(1.05); }
+  66%      { transform: translate(-20px, 20px) scale(0.95); }
+}
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float 10s ease-in-out 2s infinite;
+}
+
+/* ---------- AQI gauge ring ---------- */
+#aqi-ring {
+  transition: stroke-dashoffset 1.2s ease-out, stroke 0.8s ease;
+}
+
+/* ---------- AQI gauge wrapper ---------- */
+.aqi-gauge-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  max-height: 220px;
+}
+#aqi-gauge {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- Pulsing AQI number ---------- */
+@keyframes aqi-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+.aqi-pulse {
+  animation: aqi-pulse 2s ease-in-out infinite;
+}
+
+/* ---------- Loading spinner ---------- */
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(16, 185, 129, 0.15);
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Profile card selection ---------- */
+.profile-card {
+  cursor: pointer;
+  position: relative;
+}
+.profile-card.selected {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.15);
+  transform: scale(1.03);
+}
+.profile-card.selected .checkmark {
+  display: block !important;
+}
+.profile-card .checkmark {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* ---------- Recommendation tabs ---------- */
+.rec-tab {
+  color: #9ca3af;
+  border-bottom: 2px solid transparent;
+  position: relative;
+}
+.rec-tab:hover {
+  color: #d1d5db;
+  background: rgba(255, 255, 255, 0.03);
+}
+.rec-tab.active {
+  color: #34d399;
+  border-bottom-color: #10b981;
+}
+.tab-panel {
+  animation: fadeTab 0.35s ease;
+}
+@keyframes fadeTab {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Pollutant dominant highlight ---------- */
+.pollutant-card.dominant {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.12);
+}
+
+/* ---------- Pollutant chart container ---------- */
+.chart-container {
+  position: relative;
+  height: 60px;
+  width: 100%;
+  overflow: hidden;
+}
+.chart-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ---------- Toast notifications ---------- */
+.toast {
+  min-width: 280px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toastIn 0.35s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.toast-success { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
+.toast-error   { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+.toast-info    { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(40px); }
+}
+
+/* ---------- Custom scrollbar ---------- */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Body scrollbar */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: #030712;
+}
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ---------- Autocomplete dropdown items ---------- */
+.autocomplete-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* ---------- Recommendation card variants ---------- */
+.rec-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 16px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.rec-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Badge helpers */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-green  { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+.badge-yellow { background: rgba(245,158,11,0.15); color: #fcd34d; }
+.badge-orange { background: rgba(249,115,22,0.15); color: #fdba74; }
+.badge-red    { background: rgba(239,68,68,0.15);  color: #fca5a5; }
+.badge-purple { background: rgba(139,92,246,0.15); color: #c4b5fd; }
+.badge-maroon { background: rgba(153,27,27,0.2);   color: #fca5a5; }
+.badge-sky    { background: rgba(14,165,233,0.15);  color: #7dd3fc; }
+
+/* ---------- Wellness tip checklist ---------- */
+.wellness-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.wellness-tip-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #10b981;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+  font-size: 0.75rem;
+  margin-top: 1px;
+}
+
+/* ---------- Responsive polish ---------- */
+@media (max-width: 640px) {
+  .rec-tab {
+    font-size: 0.7rem;
+    padding: 12px 4px;
+  }
+  #aqi-gauge {
+    width: 160px;
+    height: 160px;
+  }
+  .aqi-gauge-wrapper {
+    max-height: 180px;
+  }
+}
